@@ -1,3 +1,7 @@
+## 0.3.0+2 - 2019.5.13
+
+* fix issues#4
+
 ## 0.3.0+1 - 2019.5.7
 
 * 兼容 AndroidX，去除 android support library 依赖
