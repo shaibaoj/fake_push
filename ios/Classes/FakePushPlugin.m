@@ -96,20 +96,15 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
                 case UNAuthorizationStatusProvisional:
                 default:
                     self -> _shouldCheckNotificationsPermission = YES;
-                    if (@available(iOS 11.0, *)) {
-                        NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                        [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
-                    } else {
-                        NSURL * url = [NSURL URLWithString:@"App-Prefs:root=NOTIFICATIONS_ID"];
-                        [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
-                    }
+                    NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                    [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
                     break;
             }
         }];
     } else {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED]) {
             _shouldCheckNotificationsPermission = YES;
-            NSURL * url = [NSURL URLWithString:@"App-Prefs:root=NOTIFICATIONS_ID"];
+            NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
         } else {
             [self requestNotificationsPermissionNotDetermined];
