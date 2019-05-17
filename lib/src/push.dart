@@ -27,8 +27,8 @@ class Push {
   static const String _ARGUMENT_KEY_ACCOUNT = 'account';
   static const String _ARGUMENT_KEY_TAGS = 'tags';
 
-  static const MethodChannel _channel =
-      MethodChannel('v7lin.github.io/fake_push');
+  final MethodChannel _channel =
+      const MethodChannel('v7lin.github.io/fake_push');
 
   final StreamController<bool> _notificationsPermissionStreamController =
       StreamController<bool>.broadcast();
