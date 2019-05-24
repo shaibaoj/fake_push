@@ -23,38 +23,13 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Push push = Push();
-    push.registerApp().then((_) {
-      push.startWork(enableDebug: !_isReleaseMode());
-      push.areNotificationsEnabled().then((bool isEnabled) {
-        if (!isEnabled) {
-          push.requestNotificationsPermission();
-        }
-      });
-    });
-    return PushProvider(
-      push: push,
-      child: MaterialApp(
-        home: Home(
-          push: push,
-        ),
-      ),
+    return MaterialApp(
+      home: Home(),
     );
-  }
-
-  bool _isReleaseMode() {
-    return bool.fromEnvironment('dart.vm.product');
   }
 }
 
 class Home extends StatefulWidget {
-  Home({
-    Key key,
-    @required this.push,
-  }) : super(key: key);
-
-  final Push push;
-
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -62,6 +37,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Push _push = Push()..registerApp();
+
   StreamSubscription<Message> _message;
   StreamSubscription<Message> _notification;
   StreamSubscription<Message> _launchNotification;
@@ -70,12 +47,19 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _message = widget.push.message().listen(_handleMessage);
-    _notification = widget.push.notification().listen(_handleNotification);
+    _push.startWork(enableDebug: !_isReleaseMode());
+    _push.areNotificationsEnabled().then((bool isEnabled) {
+      if (!isEnabled) {
+        _push.requestNotificationsPermission();
+      }
+    });
+
+    _message = _push.message().listen(_handleMessage);
+    _notification = _push.notification().listen(_handleNotification);
     _launchNotification =
-        widget.push.launchNotification().listen(_handleLaunchNotification);
+        _push.launchNotification().listen(_handleLaunchNotification);
     _resumeNotification =
-        widget.push.resumeNotification().listen(_handleResumeNotification);
+        _push.resumeNotification().listen(_handleResumeNotification);
   }
 
   @override
@@ -128,5 +112,9 @@ class _HomeState extends State<Home> {
   void _handleResumeNotification(Message notification) {
     print(
         'resumeNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
+  }
+
+  bool _isReleaseMode() {
+    return const bool.fromEnvironment('dart.vm.product');
   }
 }
