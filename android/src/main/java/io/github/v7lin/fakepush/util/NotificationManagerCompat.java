@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 /**
  * {@link android.support.v4.app.NotificationManagerCompat}
  */
+@SuppressWarnings("JavadocReference")
 public final class NotificationManagerCompat {
 
     private static final String CHECK_OP_NO_THROW = "checkOpNoThrow";
@@ -27,9 +28,9 @@ public final class NotificationManagerCompat {
     public boolean areNotificationsEnabled() {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= 24) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return notificationManager.areNotificationsEnabled();
-        } else if (Build.VERSION.SDK_INT >= 19) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
             ApplicationInfo appInfo = context.getApplicationInfo();
             String pkg = context.getApplicationContext().getPackageName();

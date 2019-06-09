@@ -46,6 +46,7 @@ android {
                 HW_APPID: "${华为的APPID}",
                 XIAOMI_APPID: "${小米的APPID}",
                 XIAOMI_APPKEY: "${小米的APPKEY}",
+                PACKAGE_NAME : "${applicationId}",// 小米通道
                 MEIZU_APPID: "${魅族的APPID}",
                 MEIZU_APPKEY: "${魅族的APPKEY}"
         ]
