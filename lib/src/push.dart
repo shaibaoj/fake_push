@@ -18,6 +18,8 @@ class Push {
 
   static const String _METHOD_ONNOTIFICATIONSPERMISSION =
       'onNotificationsPermission';
+  static const String _METHOD_ONREGISTEREDDEVICETOKEN =
+      'onRegisteredDeviceToken';
   static const String _METHOD_ONMESSAGE = 'onMessage';
   static const String _METHOD_ONNOTIFICATION = 'onNotification';
   static const String _METHOD_ONLAUNCHNOTIFICATION = 'onLaunchNotification';
@@ -32,6 +34,9 @@ class Push {
 
   final StreamController<bool> _notificationsPermissionStreamController =
       StreamController<bool>.broadcast();
+
+  final StreamController<String> _registeredDeviceTokenStreamController =
+      StreamController<String>.broadcast();
 
   final StreamController<Message> _messageStreamController =
       StreamController<Message>.broadcast();
@@ -53,6 +58,9 @@ class Push {
     switch (call.method) {
       case _METHOD_ONNOTIFICATIONSPERMISSION:
         _notificationsPermissionStreamController.add(call.arguments as bool);
+        break;
+      case _METHOD_ONREGISTEREDDEVICETOKEN:
+        _registeredDeviceTokenStreamController.add(call.arguments as String);
         break;
       case _METHOD_ONMESSAGE:
         _messageStreamController.add(MessageSerializer()
@@ -98,6 +106,11 @@ class Push {
         _ARGUMENT_KEY_ENABLEDEBUG: enableDebug,
       },
     );
+  }
+
+  /// 接收DeviceToken
+  Stream<String> registeredDeviceToken() {
+    return _registeredDeviceTokenStreamController.stream;
   }
 
   /// 停止推送

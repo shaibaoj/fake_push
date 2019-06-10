@@ -35,6 +35,7 @@ static NSString * const METHOD_BINDTAGS = @"bindTags";
 static NSString * const METHOD_UNBINDTAGS = @"unbindTags";
 
 static NSString * const METHOD_ONNOTIFICATIONSPERMISSION = @"onNotificationsPermission";
+static NSString * const METHOD_ONREGISTEREDDEVICETOKEN = @"onRegisteredDeviceToken";
 static NSString * const METHOD_ONMESSAGE = @"onMessage";
 static NSString * const METHOD_ONNOTIFICATION = @"onNotification";
 static NSString * const METHOD_ONLAUNCHNOTIFICATION = @"onLaunchNotification";
@@ -316,6 +317,7 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 
 -(void)xgPushDidRegisteredDeviceToken:(NSString *)deviceToken error:(NSError *)error {
     NSLog(@"xg push device token: %@", deviceToken);
+    [_channel invokeMethod:METHOD_ONREGISTEREDDEVICETOKEN arguments:deviceToken];
 }
 
 @end
