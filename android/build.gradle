@@ -38,6 +38,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'io.github.v7lin:xinge-push-android:4.3.2-release'
-    implementation 'io.github.v7lin:xinge-push-stub-android:4.3.2-release'
+    implementation 'io.github.v7lin:xinge-push-android:4.3.2-release+1'
+    implementation 'io.github.v7lin:xinge-push-stub-android:4.3.2-release+1'
 }
