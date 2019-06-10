@@ -58,6 +58,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     private static final String METHOD_UNBINDTAGS = "unbindTags";
 
     private static final String METHOD_ONNOTIFICATIONSPERMISSION = "onNotificationsPermission";
+    private static final String METHOD_ONREGISTEREDDEVICETOKEN = "onRegisteredDeviceToken";
     private static final String METHOD_ONMESSAGE = "onMessage";
     private static final String METHOD_ONNOTIFICATION = "onNotification";
     private static final String METHOD_ONLAUNCHNOTIFICATION = "onLaunchNotification";
@@ -177,6 +178,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
             public void onSuccess(Object data, int flag) {
                 //token在设备卸载重装的时候有可能会变
                 Log.d("TPush", "注册成功，设备token为：" + data);
+                channel.invokeMethod(METHOD_ONREGISTEREDDEVICETOKEN, XGPushConfig.getToken(registrar.context()));
             }
 
             @Override
