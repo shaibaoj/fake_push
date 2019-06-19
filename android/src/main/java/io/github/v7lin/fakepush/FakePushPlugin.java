@@ -51,6 +51,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     private static final String METHOD_ARENOTIFICATIONSENABLED = "areNotificationsEnabled";
     private static final String METHOD_REQUESTNOTIFICATIONSPERMISSION = "requestNotificationsPermission";
     private static final String METHOD_STARTWORK = "startWork";
+    private static final String METHOD_GETDEVICETOKEN = "getDeviceToken";
     private static final String METHOD_STOPWORK = "stopWork";
     private static final String METHOD_BINDACCOUNT = "bindAccount";
     private static final String METHOD_UNBINDACCOUNT = "unbindAccount";
@@ -103,6 +104,8 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
             requestNotificationsPermission(call, result);
         } else if (METHOD_STARTWORK.equals(call.method)) {
             startWork(call, result);
+        } else if (METHOD_GETDEVICETOKEN.equals(call.method)) {
+            result.success(XGPushConfig.getToken(registrar.context()));
         } else if (METHOD_STOPWORK.equals(call.method)) {
             stopWork(call, result);
         } else if (METHOD_BINDACCOUNT.equals(call.method)) {

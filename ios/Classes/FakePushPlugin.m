@@ -27,6 +27,7 @@
 static NSString * const METHOD_ARENOTIFICATIONSENABLED = @"areNotificationsEnabled";
 static NSString * const METHOD_REQUESTNOTIFICATIONSPERMISSION = @"requestNotificationsPermission";
 static NSString * const METHOD_STARTWORK = @"startWork";
+static NSString * const METHOD_GETDEVICETOKEN = @"getDeviceToken";
 static NSString * const METHOD_STOPWORK = @"stopWork";
 static NSString * const METHOD_BINDACCOUNT = @"bindAccount";
 static NSString * const METHOD_UNBINDACCOUNT = @"unbindAccount";
@@ -67,6 +68,8 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
         [self requestNotificationsPermission:call result:result];
     } else if ([METHOD_STARTWORK isEqualToString:call.method]) {
         [self startWork:call result:result];
+    } else if ([METHOD_GETDEVICETOKEN isEqualToString:call.method]) {
+        result([[XGPushTokenManager defaultTokenManager] deviceTokenString]);
     } else if ([METHOD_STOPWORK isEqualToString:call.method]) {
         [self stopWork:call result:result];
     } else if ([METHOD_BINDACCOUNT isEqualToString:call.method]) {

@@ -10,6 +10,7 @@ class Push {
   static const String _METHOD_REQUESTNOTIFICATIONSPERMISSION =
       'requestNotificationsPermission';
   static const String _METHOD_STARTWORK = 'startWork';
+  static const String _METHOD_GETDEVICETOKEN = 'getDeviceToken';
   static const String _METHOD_STOPWORK = 'stopWork';
   static const String _METHOD_BINDACCOUNT = 'bindAccount';
   static const String _METHOD_UNBINDACCOUNT = 'unbindAccount';
@@ -101,6 +102,12 @@ class Push {
         _ARGUMENT_KEY_ENABLEDEBUG: enableDebug,
       },
     );
+  }
+
+  Future<String> getDeviceToken() {
+    return _channel
+        .invokeMethod(_METHOD_GETDEVICETOKEN)
+        .then((dynamic resp) => resp as String);
   }
 
   /// 接收DeviceToken

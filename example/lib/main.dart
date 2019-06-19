@@ -100,8 +100,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _handleRegisteredDeviceToken(String deviceToken) {
-    print('deviceToken: $deviceToken');
+  void _handleRegisteredDeviceToken(String deviceToken) async {
+    print('deviceToken: $deviceToken - ${await _push.getDeviceToken()}');
   }
 
   void _handleMessage(Message message) {
