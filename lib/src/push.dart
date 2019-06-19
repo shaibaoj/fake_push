@@ -16,8 +16,6 @@ class Push {
   static const String _METHOD_BINDTAGS = 'bindTags';
   static const String _METHOD_UNBINDTAGS = 'unbindTags';
 
-  static const String _METHOD_ONNOTIFICATIONSPERMISSION =
-      'onNotificationsPermission';
   static const String _METHOD_ONREGISTEREDDEVICETOKEN =
       'onRegisteredDeviceToken';
   static const String _METHOD_ONMESSAGE = 'onMessage';
@@ -56,9 +54,6 @@ class Push {
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
-      case _METHOD_ONNOTIFICATIONSPERMISSION:
-        _notificationsPermissionStreamController.add(call.arguments as bool);
-        break;
       case _METHOD_ONREGISTEREDDEVICETOKEN:
         _registeredDeviceTokenStreamController.add(call.arguments as String);
         break;

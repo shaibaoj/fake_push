@@ -39,6 +39,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Push _push = Push()..registerApp();
 
+  StreamSubscription<String> _registeredDeviceToken;
   StreamSubscription<Message> _message;
   StreamSubscription<Message> _notification;
   StreamSubscription<Message> _launchNotification;
@@ -54,6 +55,8 @@ class _HomeState extends State<Home> {
       }
     });
 
+    _registeredDeviceToken =
+        _push.registeredDeviceToken().listen(_handleRegisteredDeviceToken);
     _message = _push.message().listen(_handleMessage);
     _notification = _push.notification().listen(_handleNotification);
     _launchNotification =
@@ -64,6 +67,9 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
+    if (_registeredDeviceToken != null) {
+      _registeredDeviceToken.cancel();
+    }
     if (_message != null) {
       _message.cancel();
     }
@@ -92,6 +98,10 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  void _handleRegisteredDeviceToken(String deviceToken) {
+    print('deviceToken: $deviceToken');
   }
 
   void _handleMessage(Message message) {

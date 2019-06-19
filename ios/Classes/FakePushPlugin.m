@@ -10,7 +10,6 @@
 
 @implementation FakePushPlugin {
     FlutterMethodChannel *_channel;
-    BOOL _shouldCheckNotificationsPermission;
     
     NSDictionary *_launchNotification;
     BOOL _resumingFromBackground;
@@ -34,7 +33,6 @@ static NSString * const METHOD_UNBINDACCOUNT = @"unbindAccount";
 static NSString * const METHOD_BINDTAGS = @"bindTags";
 static NSString * const METHOD_UNBINDTAGS = @"unbindTags";
 
-static NSString * const METHOD_ONNOTIFICATIONSPERMISSION = @"onNotificationsPermission";
 static NSString * const METHOD_ONREGISTEREDDEVICETOKEN = @"onRegisteredDeviceToken";
 static NSString * const METHOD_ONMESSAGE = @"onMessage";
 static NSString * const METHOD_ONNOTIFICATION = @"onNotification";
@@ -55,7 +53,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
     self = [super init];
     if (self) {
         _channel = channel;
-        _shouldCheckNotificationsPermission = NO;
         _resumingFromBackground = NO;
     }
     return self;
@@ -88,23 +85,15 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 - (void)requestNotificationsPermission:(FlutterMethodCall*)call result:(FlutterResult)result {
     if (@available(iOS 10.0, *)) {
         [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-            switch (settings.authorizationStatus) {
-                case UNAuthorizationStatusNotDetermined:
-                    [self requestNotificationsPermissionNotDetermined];
-                    break;
-                case UNAuthorizationStatusDenied:
-                case UNAuthorizationStatusAuthorized:
-                case UNAuthorizationStatusProvisional:
-                default:
-                    self -> _shouldCheckNotificationsPermission = YES;
-                    NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                    [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
-                    break;
+            if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
+                [self requestNotificationsPermissionNotDetermined];
+            } else {
+                NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
             }
         }];
     } else {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED]) {
-            _shouldCheckNotificationsPermission = YES;
             NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
         } else {
@@ -117,7 +106,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 - (void)requestNotificationsPermissionNotDetermined {
     if (@available(iOS 10.0, *)) {
         [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-            [self -> _channel invokeMethod:METHOD_ONNOTIFICATIONSPERMISSION arguments:[NSNumber numberWithBool:granted]];
         }];
     } else {
         UIUserNotificationType myTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
@@ -258,7 +246,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
         // do nothing
     } else {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED];
-        [_channel invokeMethod:METHOD_ONNOTIFICATIONSPERMISSION arguments:[NSNumber numberWithBool:notificationSettings.types != UIUserNotificationTypeNone]];
     }
 }
 
@@ -268,12 +255,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     _resumingFromBackground = NO;
-    if (_shouldCheckNotificationsPermission) {
-        _shouldCheckNotificationsPermission = NO;
-        [[XGPush defaultManager] deviceNotificationIsAllowed:^(BOOL isAllowed) {
-            [self -> _channel invokeMethod:METHOD_ONNOTIFICATIONSPERMISSION arguments:[NSNumber numberWithBool:isAllowed]];
-        }];
-    }
 }
 
 - (BOOL)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {

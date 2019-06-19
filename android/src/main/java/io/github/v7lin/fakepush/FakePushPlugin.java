@@ -57,7 +57,6 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     private static final String METHOD_BINDTAGS = "bindTags";
     private static final String METHOD_UNBINDTAGS = "unbindTags";
 
-    private static final String METHOD_ONNOTIFICATIONSPERMISSION = "onNotificationsPermission";
     private static final String METHOD_ONREGISTEREDDEVICETOKEN = "onRegisteredDeviceToken";
     private static final String METHOD_ONMESSAGE = "onMessage";
     private static final String METHOD_ONNOTIFICATION = "onNotification";
@@ -71,8 +70,6 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     public static final String ARGUMENT_KEY_RESULT_TITLE = "title";
     public static final String ARGUMENT_KEY_RESULT_CONTENT = "content";
     public static final String ARGUMENT_KEY_RESULT_CUSTOMCONTENT = "customContent";
-
-    private static final int REQUEST_CODE_FOR_REQUESTNOTIFICATIONSPERMISSION = 1033493956; // "fake_push".hashCode();
 
     private final Registrar registrar;
     private final MethodChannel channel;
@@ -143,7 +140,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
                             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                             intent.setData(Uri.fromParts("package", registrar.context().getPackageName(), null));
                         }
-                        registrar.activity().startActivityForResult(intent, REQUEST_CODE_FOR_REQUESTNOTIFICATIONSPERMISSION);
+                        registrar.activity().startActivity(intent);
                     }
                 })
                 .setNegativeButton(R.string.fake_push_cancel, new DialogInterface.OnClickListener() {
@@ -178,7 +175,14 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
             public void onSuccess(Object data, int flag) {
                 //token在设备卸载重装的时候有可能会变
                 Log.d("TPush", "注册成功，设备token为：" + data);
-                channel.invokeMethod(METHOD_ONREGISTEREDDEVICETOKEN, XGPushConfig.getToken(registrar.context()));
+                if (registrar.activity() != null && !registrar.activity().isFinishing()) {
+                    registrar.activity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            channel.invokeMethod(METHOD_ONREGISTEREDDEVICETOKEN, XGPushConfig.getToken(registrar.context()));
+                        }
+                    });
+                }
             }
 
             @Override
@@ -289,11 +293,6 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_FOR_REQUESTNOTIFICATIONSPERMISSION:
-                channel.invokeMethod(METHOD_ONNOTIFICATIONSPERMISSION, NotificationManagerCompat.from(registrar.context()).areNotificationsEnabled());
-                return true;
-        }
         return false;
     }
 
