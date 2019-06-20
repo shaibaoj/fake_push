@@ -31,9 +31,6 @@ class Push {
   final MethodChannel _channel =
       const MethodChannel('v7lin.github.io/fake_push');
 
-  final StreamController<bool> _notificationsPermissionStreamController =
-      StreamController<bool>.broadcast();
-
   final StreamController<String> _registeredDeviceTokenStreamController =
       StreamController<String>.broadcast();
 
@@ -85,11 +82,6 @@ class Push {
   /// 请求打开通知开关
   Future<void> requestNotificationsPermission() {
     return _channel.invokeMethod(_METHOD_REQUESTNOTIFICATIONSPERMISSION);
-  }
-
-  /// 请求打开通知开关 - 回调
-  Stream<bool> notificationsPermission() {
-    return _notificationsPermissionStreamController.stream;
   }
 
   /// 开始推送
