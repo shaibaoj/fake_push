@@ -101,10 +101,10 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
             openNotificationsSettings(call, result);
         } else if (METHOD_STARTWORK.equals(call.method)) {
             startWork(call, result);
-        } else if (METHOD_GETDEVICETOKEN.equals(call.method)) {
-            result.success(XGPushConfig.getToken(registrar.context()));
         } else if (METHOD_STOPWORK.equals(call.method)) {
             stopWork(call, result);
+        } else if (METHOD_GETDEVICETOKEN.equals(call.method)) {
+            result.success(XGPushConfig.getToken(registrar.context()));
         } else if (METHOD_BINDACCOUNT.equals(call.method)) {
             bindAccount(call, result);
         } else if (METHOD_UNBINDACCOUNT.equals(call.method)) {
