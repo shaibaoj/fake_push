@@ -102,17 +102,17 @@ class _HomeState extends State<Home> {
   }
 
   void _handleReceiveDeviceToken(String deviceToken) async {
-    print('deviceToken: $deviceToken - ${await _push.getDeviceToken()}');
+    print('receiveDeviceToken: $deviceToken - ${await _push.getDeviceToken()}');
   }
 
   void _handleReceiveMessage(Message message) {
     print(
-        'message: ${message.title} - ${message.content} - ${message.customContent}');
+        'receiveMessage: ${message.title} - ${message.content} - ${message.customContent}');
   }
 
   void _handleReceiveNotification(Message notification) {
     print(
-        'notification: ${notification.title} - ${notification.content} - ${notification.customContent}');
+        'receiveNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
   }
 
   void _handleLaunchNotification(Message notification) {
