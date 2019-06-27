@@ -48,13 +48,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _push.startWork(enableDebug: !_isReleaseMode());
-    _push.areNotificationsEnabled().then((bool isEnabled) {
-      if (!isEnabled) {
-        _push.openNotificationsSettings();
-      }
-    });
-
     _receiveDeviceToken =
         _push.receiveDeviceToken().listen(_handleReceiveDeviceToken);
     _receiveMessage = _push.receiveMessage().listen(_handleReceiveMessage);
@@ -64,6 +57,13 @@ class _HomeState extends State<Home> {
         _push.launchNotification().listen(_handleLaunchNotification);
     _resumeNotification =
         _push.resumeNotification().listen(_handleResumeNotification);
+
+    _push.startWork(enableDebug: !_isReleaseMode());
+    _push.areNotificationsEnabled().then((bool isEnabled) {
+      if (!isEnabled) {
+        _push.openNotificationsSettings();
+      }
+    });
   }
 
   @override
