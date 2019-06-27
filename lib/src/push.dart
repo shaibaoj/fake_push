@@ -31,13 +31,13 @@ class Push {
   final MethodChannel _channel =
       const MethodChannel('v7lin.github.io/fake_push');
 
-  final StreamController<String> _registeredDeviceTokenStreamController =
+  final StreamController<String> _receiveDeviceTokenStreamController =
       StreamController<String>.broadcast();
 
-  final StreamController<Message> _messageStreamController =
+  final StreamController<Message> _receiveMessageStreamController =
       StreamController<Message>.broadcast();
 
-  final StreamController<Message> _notificationStreamController =
+  final StreamController<Message> _receiveNotificationStreamController =
       StreamController<Message>.broadcast();
 
   final StreamController<Message> _launchNotificationStreamController =
@@ -53,14 +53,14 @@ class Push {
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case _METHOD_ONREGISTEREDDEVICETOKEN:
-        _registeredDeviceTokenStreamController.add(call.arguments as String);
+        _receiveDeviceTokenStreamController.add(call.arguments as String);
         break;
       case _METHOD_ONMESSAGE:
-        _messageStreamController.add(MessageSerializer()
+        _receiveMessageStreamController.add(MessageSerializer()
             .fromMap(call.arguments as Map<dynamic, dynamic>));
         break;
       case _METHOD_ONNOTIFICATION:
-        _notificationStreamController.add(MessageSerializer()
+        _receiveNotificationStreamController.add(MessageSerializer()
             .fromMap(call.arguments as Map<dynamic, dynamic>));
         break;
       case _METHOD_ONLAUNCHNOTIFICATION:
@@ -105,7 +105,7 @@ class Push {
 
   /// 接收DeviceToken
   Stream<String> receiveDeviceToken() {
-    return _registeredDeviceTokenStreamController.stream;
+    return _receiveDeviceTokenStreamController.stream;
   }
 
   /// 停止推送
@@ -115,12 +115,12 @@ class Push {
 
   /// 接收透传消息（静默消息）
   Stream<Message> receiveMessage() {
-    return _messageStreamController.stream;
+    return _receiveMessageStreamController.stream;
   }
 
   /// 接收通知消息
   Stream<Message> receiveNotification() {
-    return _notificationStreamController.stream;
+    return _receiveNotificationStreamController.stream;
   }
 
   /// 接收通知栏点击事件 - 后台
