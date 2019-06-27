@@ -7,20 +7,19 @@ import 'package:meta/meta.dart';
 class Push {
   static const String _METHOD_ARENOTIFICATIONSENABLED =
       'areNotificationsEnabled';
-  static const String _METHOD_REQUESTNOTIFICATIONSPERMISSION =
-      'requestNotificationsPermission';
+  static const String _METHOD_OPENNOTIFICATIONSSETTINGS =
+      'openNotificationsSettings';
   static const String _METHOD_STARTWORK = 'startWork';
-  static const String _METHOD_GETDEVICETOKEN = 'getDeviceToken';
   static const String _METHOD_STOPWORK = 'stopWork';
+  static const String _METHOD_GETDEVICETOKEN = 'getDeviceToken';
   static const String _METHOD_BINDACCOUNT = 'bindAccount';
   static const String _METHOD_UNBINDACCOUNT = 'unbindAccount';
   static const String _METHOD_BINDTAGS = 'bindTags';
   static const String _METHOD_UNBINDTAGS = 'unbindTags';
 
-  static const String _METHOD_ONREGISTEREDDEVICETOKEN =
-      'onRegisteredDeviceToken';
-  static const String _METHOD_ONMESSAGE = 'onMessage';
-  static const String _METHOD_ONNOTIFICATION = 'onNotification';
+  static const String _METHOD_ONRECEIVEDEVICETOKEN = 'onReceiveDeviceToken';
+  static const String _METHOD_ONRECEIVEMESSAGE = 'onReceiveMessage';
+  static const String _METHOD_ONRECEIVENOTIFICATION = 'onReceiveNotification';
   static const String _METHOD_ONLAUNCHNOTIFICATION = 'onLaunchNotification';
   static const String _METHOD_ONRESUMENOTIFICATION = 'onResumeNotification';
 
@@ -52,14 +51,14 @@ class Push {
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
-      case _METHOD_ONREGISTEREDDEVICETOKEN:
+      case _METHOD_ONRECEIVEDEVICETOKEN:
         _receiveDeviceTokenStreamController.add(call.arguments as String);
         break;
-      case _METHOD_ONMESSAGE:
+      case _METHOD_ONRECEIVEMESSAGE:
         _receiveMessageStreamController.add(MessageSerializer()
             .fromMap(call.arguments as Map<dynamic, dynamic>));
         break;
-      case _METHOD_ONNOTIFICATION:
+      case _METHOD_ONRECEIVENOTIFICATION:
         _receiveNotificationStreamController.add(MessageSerializer()
             .fromMap(call.arguments as Map<dynamic, dynamic>));
         break;
@@ -80,8 +79,8 @@ class Push {
   }
 
   /// 请求打开通知开关
-  Future<void> requestNotificationsPermission() {
-    return _channel.invokeMethod(_METHOD_REQUESTNOTIFICATIONSPERMISSION);
+  Future<void> openNotificationsSettings() {
+    return _channel.invokeMethod(_METHOD_OPENNOTIFICATIONSSETTINGS);
   }
 
   /// 开始推送
@@ -96,21 +95,14 @@ class Push {
     );
   }
 
-  /// 获取 DeviceToken
-  Future<String> getDeviceToken() {
-    return _channel
-        .invokeMethod(_METHOD_GETDEVICETOKEN)
-        .then((dynamic resp) => resp as String);
+  /// 停止推送
+  Future<void> stopWork() {
+    return _channel.invokeMethod(_METHOD_STOPWORK);
   }
 
   /// 接收DeviceToken
   Stream<String> receiveDeviceToken() {
     return _receiveDeviceTokenStreamController.stream;
-  }
-
-  /// 停止推送
-  Future<void> stopWork() {
-    return _channel.invokeMethod(_METHOD_STOPWORK);
   }
 
   /// 接收透传消息（静默消息）
@@ -131,6 +123,13 @@ class Push {
   /// 接收通知栏点击事件 - 前台
   Stream<Message> resumeNotification() {
     return _resumeNotificationStreamController.stream;
+  }
+
+  /// 获取 DeviceToken
+  Future<String> getDeviceToken() {
+    return _channel
+        .invokeMethod(_METHOD_GETDEVICETOKEN)
+        .then((dynamic resp) => resp as String);
   }
 
   /// 绑定帐号

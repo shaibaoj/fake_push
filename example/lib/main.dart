@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
     _push.startWork(enableDebug: !_isReleaseMode());
     _push.areNotificationsEnabled().then((bool isEnabled) {
       if (!isEnabled) {
-        _push.requestNotificationsPermission();
+        _push.openNotificationsSettings();
       }
     });
 
