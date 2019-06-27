@@ -104,7 +104,7 @@ class Push {
   }
 
   /// 接收DeviceToken
-  Stream<String> registeredDeviceToken() {
+  Stream<String> receiveDeviceToken() {
     return _registeredDeviceTokenStreamController.stream;
   }
 
@@ -114,12 +114,12 @@ class Push {
   }
 
   /// 接收透传消息（静默消息）
-  Stream<Message> message() {
+  Stream<Message> receiveMessage() {
     return _messageStreamController.stream;
   }
 
   /// 接收通知消息
-  Stream<Message> notification() {
+  Stream<Message> receiveNotification() {
     return _notificationStreamController.stream;
   }
 

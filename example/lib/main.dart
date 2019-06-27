@@ -39,9 +39,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Push _push = Push()..registerApp();
 
-  StreamSubscription<String> _registeredDeviceToken;
-  StreamSubscription<Message> _message;
-  StreamSubscription<Message> _notification;
+  StreamSubscription<String> _receiveDeviceToken;
+  StreamSubscription<Message> _receiveMessage;
+  StreamSubscription<Message> _receiveNotification;
   StreamSubscription<Message> _launchNotification;
   StreamSubscription<Message> _resumeNotification;
 
@@ -55,10 +55,11 @@ class _HomeState extends State<Home> {
       }
     });
 
-    _registeredDeviceToken =
-        _push.registeredDeviceToken().listen(_handleRegisteredDeviceToken);
-    _message = _push.message().listen(_handleMessage);
-    _notification = _push.notification().listen(_handleNotification);
+    _receiveDeviceToken =
+        _push.receiveDeviceToken().listen(_handleReceiveDeviceToken);
+    _receiveMessage = _push.receiveMessage().listen(_handleReceiveMessage);
+    _receiveNotification =
+        _push.receiveNotification().listen(_handleReceiveNotification);
     _launchNotification =
         _push.launchNotification().listen(_handleLaunchNotification);
     _resumeNotification =
@@ -67,14 +68,14 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    if (_registeredDeviceToken != null) {
-      _registeredDeviceToken.cancel();
+    if (_receiveDeviceToken != null) {
+      _receiveDeviceToken.cancel();
     }
-    if (_message != null) {
-      _message.cancel();
+    if (_receiveMessage != null) {
+      _receiveMessage.cancel();
     }
-    if (_notification != null) {
-      _notification.cancel();
+    if (_receiveNotification != null) {
+      _receiveNotification.cancel();
     }
     if (_launchNotification != null) {
       _launchNotification.cancel();
@@ -100,16 +101,16 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _handleRegisteredDeviceToken(String deviceToken) async {
+  void _handleReceiveDeviceToken(String deviceToken) async {
     print('deviceToken: $deviceToken - ${await _push.getDeviceToken()}');
   }
 
-  void _handleMessage(Message message) {
+  void _handleReceiveMessage(Message message) {
     print(
         'message: ${message.title} - ${message.content} - ${message.customContent}');
   }
 
-  void _handleNotification(Message notification) {
+  void _handleReceiveNotification(Message notification) {
     print(
         'notification: ${notification.title} - ${notification.content} - ${notification.customContent}');
   }
