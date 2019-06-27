@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="fake_push_alert_title">温馨提示</string>
-    <string name="fake_push_message_notifications">请在“通知”中打开通知权限</string>
-    <string name="fake_push_settings">设置</string>
-    <string name="fake_push_cancel">取消</string>
-</resources>

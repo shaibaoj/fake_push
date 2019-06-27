@@ -1,12 +1,9 @@
 package io.github.v7lin.fakepush;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -49,18 +46,18 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     }
 
     private static final String METHOD_ARENOTIFICATIONSENABLED = "areNotificationsEnabled";
-    private static final String METHOD_REQUESTNOTIFICATIONSPERMISSION = "requestNotificationsPermission";
+    private static final String METHOD_OPENNOTIFICATIONSSETTINGS = "openNotificationsSettings";
     private static final String METHOD_STARTWORK = "startWork";
-    private static final String METHOD_GETDEVICETOKEN = "getDeviceToken";
     private static final String METHOD_STOPWORK = "stopWork";
+    private static final String METHOD_GETDEVICETOKEN = "getDeviceToken";
     private static final String METHOD_BINDACCOUNT = "bindAccount";
     private static final String METHOD_UNBINDACCOUNT = "unbindAccount";
     private static final String METHOD_BINDTAGS = "bindTags";
     private static final String METHOD_UNBINDTAGS = "unbindTags";
 
-    private static final String METHOD_ONREGISTEREDDEVICETOKEN = "onRegisteredDeviceToken";
-    private static final String METHOD_ONMESSAGE = "onMessage";
-    private static final String METHOD_ONNOTIFICATION = "onNotification";
+    private static final String METHOD_ONRECEIVEDEVICETOKEN = "onReceiveDeviceToken";
+    private static final String METHOD_ONRECEIVEMESSAGE = "onReceiveMessage";
+    private static final String METHOD_ONRECEIVENOTIFICATION = "onReceiveNotification";
     private static final String METHOD_ONLAUNCHNOTIFICATION = "onLaunchNotification";
     private static final String METHOD_ONRESUMENOTIFICATION = "onResumeNotification";
 
@@ -86,13 +83,13 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
 
     private PushMSGReceiver pushMSGReceiver = new PushMSGReceiver() {
         @Override
-        public void onMessage(Context context, Map<String, Object> map) {
-            channel.invokeMethod(METHOD_ONMESSAGE, map);
+        public void onReceiveMessage(Context context, Map<String, Object> map) {
+            channel.invokeMethod(METHOD_ONRECEIVEMESSAGE, map);
         }
 
         @Override
-        public void onNotification(Context context, Map<String, Object> map) {
-            channel.invokeMethod(METHOD_ONNOTIFICATION, map);
+        public void onReceiveNotification(Context context, Map<String, Object> map) {
+            channel.invokeMethod(METHOD_ONRECEIVENOTIFICATION, map);
         }
     };
 
@@ -100,8 +97,8 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     public void onMethodCall(MethodCall call, final Result result) {
         if (METHOD_ARENOTIFICATIONSENABLED.equals(call.method)) {
             result.success(NotificationManagerCompat.from(registrar.context()).areNotificationsEnabled());
-        } else if (METHOD_REQUESTNOTIFICATIONSPERMISSION.equals(call.method)) {
-            requestNotificationsPermission(call, result);
+        } else if (METHOD_OPENNOTIFICATIONSSETTINGS.equals(call.method)) {
+            openNotificationsSettings(call, result);
         } else if (METHOD_STARTWORK.equals(call.method)) {
             startWork(call, result);
         } else if (METHOD_GETDEVICETOKEN.equals(call.method)) {
@@ -121,38 +118,22 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
         }
     }
 
-    private void requestNotificationsPermission(MethodCall call, final Result result) {
-        new AlertDialog.Builder(registrar.activity(), android.R.style.Theme_DeviceDefault_Light_Dialog)
-                .setTitle(R.string.fake_push_alert_title)
-                .setMessage(R.string.fake_push_message_notifications)
-                .setPositiveButton(R.string.fake_push_settings, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-                            intent.putExtra(Settings.EXTRA_APP_PACKAGE, registrar.context().getPackageName());
-//                            intent.putExtra(Settings.EXTRA_CHANNEL_ID, registrar.context().getApplicationInfo().uid);
-                        } else {
-                            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-                            intent.putExtra("app_package", registrar.context().getPackageName());
-                            intent.putExtra("app_uid", registrar.context().getApplicationInfo().uid);
-                        }
-                        List<ResolveInfo> resolveInfos = registrar.context().getPackageManager().queryIntentActivities(intent, 0);
-                        if (resolveInfos == null || resolveInfos.isEmpty()) {
-                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.fromParts("package", registrar.context().getPackageName(), null));
-                        }
-                        registrar.activity().startActivity(intent);
-                    }
-                })
-                .setNegativeButton(R.string.fake_push_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
+    private void openNotificationsSettings(MethodCall call, final Result result) {
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, registrar.context().getPackageName());
+//            intent.putExtra(Settings.EXTRA_CHANNEL_ID, registrar.context().getApplicationInfo().uid);
+        } else {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra("app_package", registrar.context().getPackageName());
+            intent.putExtra("app_uid", registrar.context().getApplicationInfo().uid);
+        }
+        if (intent.resolveActivity(registrar.context().getPackageManager()) != null) {
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", registrar.context().getPackageName(), null));
+        }
+        registrar.activity().startActivity(intent);
 
         result.success(null);
     }
@@ -169,8 +150,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
             XGPushConfig.setMiPushAppKey(registrar.context(), appInfo.metaData.getString(XinGeConstants.META_KEY_XIAOMI_APPKEY));
             XGPushConfig.setMzPushAppId(registrar.context(), appInfo.metaData.getString(XinGeConstants.META_KEY_MEIZU_APPID));
             XGPushConfig.setMzPushAppKey(registrar.context(), appInfo.metaData.getString(XinGeConstants.META_KEY_MEIZU_APPKEY));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        } catch (PackageManager.NameNotFoundException ignore) {
         }
 
         XGPushManager.registerPush(registrar.context(), new XGIOperateCallback() {
@@ -182,7 +162,7 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
                     registrar.activity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            channel.invokeMethod(METHOD_ONREGISTEREDDEVICETOKEN, XGPushConfig.getToken(registrar.context()));
+                            channel.invokeMethod(METHOD_ONRECEIVEDEVICETOKEN, XGPushConfig.getToken(registrar.context()));
                         }
                     });
                 }

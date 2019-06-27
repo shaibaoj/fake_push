@@ -34,7 +34,7 @@ public class XinGeMessageReceiver extends XGPushBaseReceiver {
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
         // 消息透传的回调
-        PushMSGReceiver.sendMessage(context, message);
+        PushMSGReceiver.receiveMessage(context, message);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class XinGeMessageReceiver extends XGPushBaseReceiver {
         // 通知展示
         // notificationActionType==1为Activity，2为url，3为intent -> flutter 只能选 1
         // Activity,url,intent都可以通过getActivity()获得
-        PushMSGReceiver.sendNotification(context, message);
+        PushMSGReceiver.receiveNotification(context, message);
     }
 }
