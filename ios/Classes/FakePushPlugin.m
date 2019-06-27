@@ -25,18 +25,18 @@
 }
 
 static NSString * const METHOD_ARENOTIFICATIONSENABLED = @"areNotificationsEnabled";
-static NSString * const METHOD_REQUESTNOTIFICATIONSPERMISSION = @"requestNotificationsPermission";
+static NSString * const METHOD_OPENNOTIFICATIONSSETTINGS = @"openNotificationsSettings";
 static NSString * const METHOD_STARTWORK = @"startWork";
-static NSString * const METHOD_GETDEVICETOKEN = @"getDeviceToken";
 static NSString * const METHOD_STOPWORK = @"stopWork";
+static NSString * const METHOD_GETDEVICETOKEN = @"getDeviceToken";
 static NSString * const METHOD_BINDACCOUNT = @"bindAccount";
 static NSString * const METHOD_UNBINDACCOUNT = @"unbindAccount";
 static NSString * const METHOD_BINDTAGS = @"bindTags";
 static NSString * const METHOD_UNBINDTAGS = @"unbindTags";
 
-static NSString * const METHOD_ONREGISTEREDDEVICETOKEN = @"onRegisteredDeviceToken";
-static NSString * const METHOD_ONMESSAGE = @"onMessage";
-static NSString * const METHOD_ONNOTIFICATION = @"onNotification";
+static NSString * const METHOD_ONRECEIVEDEVICETOKEN = @"onReceiveDeviceToken";
+static NSString * const METHOD_ONRECEIVEMESSAGE = @"onReceiveMessage";
+static NSString * const METHOD_ONRECEIVENOTIFICATION = @"onReceiveNotification";
 static NSString * const METHOD_ONLAUNCHNOTIFICATION = @"onLaunchNotification";
 static NSString * const METHOD_ONRESUMENOTIFICATION = @"onResumeNotification";
 
@@ -64,14 +64,14 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
         [[XGPush defaultManager] deviceNotificationIsAllowed:^(BOOL isAllowed) {
             result([NSNumber numberWithBool:isAllowed]);
         }];
-    } else if ([METHOD_REQUESTNOTIFICATIONSPERMISSION isEqualToString:call.method]) {
-        [self requestNotificationsPermission:call result:result];
+    } else if ([METHOD_OPENNOTIFICATIONSSETTINGS isEqualToString:call.method]) {
+        [self openNotificationsSettings:call result:result];
     } else if ([METHOD_STARTWORK isEqualToString:call.method]) {
         [self startWork:call result:result];
-    } else if ([METHOD_GETDEVICETOKEN isEqualToString:call.method]) {
-        result([[XGPushTokenManager defaultTokenManager] deviceTokenString]);
     } else if ([METHOD_STOPWORK isEqualToString:call.method]) {
         [self stopWork:call result:result];
+    } else if ([METHOD_GETDEVICETOKEN isEqualToString:call.method]) {
+        result([[XGPushTokenManager defaultTokenManager] deviceTokenString]);
     } else if ([METHOD_BINDACCOUNT isEqualToString:call.method]) {
         [self bindAccount:call result:result];
     } else if ([METHOD_UNBINDACCOUNT isEqualToString:call.method]) {
@@ -85,19 +85,19 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
     }
 }
 
-- (void)requestNotificationsPermission:(FlutterMethodCall*)call result:(FlutterResult)result {
+- (void)openNotificationsSettings:(FlutterMethodCall*)call result:(FlutterResult)result {
     if (@available(iOS 10.0, *)) {
         [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
             if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
                 [self requestNotificationsPermissionNotDetermined];
             } else {
-                NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                 [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
             }
         }];
     } else {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED]) {
-            NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
         } else {
             [self requestNotificationsPermissionNotDetermined];
@@ -183,10 +183,10 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
     }
     if (contentAvailable == 1) {
         // 静默消息
-        [_channel invokeMethod:METHOD_ONMESSAGE arguments:[self parseMessage:userInfo]];
+        [_channel invokeMethod:METHOD_ONRECEIVEMESSAGE arguments:[self parseMessage:userInfo]];
     } else {
         // 通知推送
-        [_channel invokeMethod:METHOD_ONNOTIFICATION arguments:[self parseNotification:userInfo]];
+        [_channel invokeMethod:METHOD_ONRECEIVENOTIFICATION arguments:[self parseNotification:userInfo]];
     }
 }
 
@@ -301,7 +301,7 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 
 -(void)xgPushDidRegisteredDeviceToken:(NSString *)deviceToken error:(NSError *)error {
     NSLog(@"xg push device token: %@", deviceToken);
-    [_channel invokeMethod:METHOD_ONREGISTEREDDEVICETOKEN arguments:deviceToken];
+    [_channel invokeMethod:METHOD_ONRECEIVEDEVICETOKEN arguments:deviceToken];
 }
 
 @end
