@@ -127,9 +127,7 @@ class Push {
 
   /// 获取 DeviceToken
   Future<String> getDeviceToken() {
-    return _channel
-        .invokeMethod(_METHOD_GETDEVICETOKEN)
-        .then((dynamic resp) => resp as String);
+    return _channel.invokeMethod(_METHOD_GETDEVICETOKEN);
   }
 
   /// 绑定帐号
