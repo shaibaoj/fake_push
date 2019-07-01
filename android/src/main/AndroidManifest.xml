@@ -13,13 +13,6 @@
             android:name="com.xiaomi.mipush.sdk.appkey"
             android:value="\${XIAOMI_APPKEY}" />
 
-        <meta-data
-            android:name="com.meizu.cloud.pushsdk.appid"
-            android:value="\${MEIZU_APPID}" />
-        <meta-data
-            android:name="com.meizu.cloud.pushsdk.appkey"
-            android:value="\${MEIZU_APPKEY}" />
-
         <receiver
             android:name=".xinge.XinGeMessageReceiver"
             android:exported="true">

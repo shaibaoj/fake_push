@@ -46,8 +46,6 @@ android {
                 XIAOMI_APPID : '2882303761517989384',
                 XIAOMI_APPKEY: '5141798993384',
                 PACKAGE_NAME : "${applicationId}",// 小米通道
-                MEIZU_APPID  : '120088',
-                MEIZU_APPKEY : '0fbef574fd1c4eb2bc13caf009b37c6d'
         ]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

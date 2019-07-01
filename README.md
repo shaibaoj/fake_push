@@ -26,7 +26,6 @@ flutter版腾讯(信鸽)推送SDK
 * [信鸽推送](https://xg.qq.com/)
 * [华为推送](https://developer.huawei.com/consumer/cn/console#/openCard/AppService/6)
 * [小米推送](https://dev.mi.com/console/appservice/push.html)
-* [魅族推送](https://open.flyme.cn/open-web/views/push.html)
 
 ## android
 
@@ -41,14 +40,12 @@ android {
     defaultConfig {
         ...
         manifestPlaceholders = [
-                XG_ACCESS_ID: "${信鸽ACCESSID}",
-                XG_ACCESS_KEY: "${信鸽ACCESSKEY}",
-                HW_APPID: "${华为的APPID}",
-                XIAOMI_APPID: "${小米的APPID}",
-                XIAOMI_APPKEY: "${小米的APPKEY}",
+                XG_ACCESS_ID : '${信鸽ACCESSID}',
+                XG_ACCESS_KEY: '${信鸽ACCESSKEY}',
+                HW_APPID     : '${华为的APPID}',
+                XIAOMI_APPID : '${小米的APPID}',
+                XIAOMI_APPKEY: '${小米的APPKEY}',
                 PACKAGE_NAME : "${applicationId}",// 小米通道
-                MEIZU_APPID: "${魅族的APPID}",
-                MEIZU_APPKEY: "${魅族的APPKEY}"
         ]
         ...
     }
