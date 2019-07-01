@@ -46,7 +46,7 @@ android {
         manifestPlaceholders = [
                 XG_ACCESS_ID    : '${信鸽ACCESSID}',
                 XG_ACCESS_KEY   : '${信鸽ACCESSKEY}',
-                XG_ACCESS_SCHEME: 'fake_push',// 非官方参数，可自定义，统一打开方式为 intent
+                XG_ACCESS_SCHEME: '${信鸽统一打开APP行为SCHEME}',// 非官方参数，可自定义(例如：fake_push)，统一打开方式为 intent
                 HW_APPID        : '${华为的APPID}',
                 XIAOMI_APPID    : '${小米的APPID}',
                 XIAOMI_APPKEY   : '${小米的APPKEY}',

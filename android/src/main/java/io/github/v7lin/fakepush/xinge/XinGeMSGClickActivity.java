@@ -3,13 +3,13 @@ package io.github.v7lin.fakepush.xinge;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.v7lin.fakepush.util.JsonUtils;
 
@@ -36,14 +36,18 @@ public class XinGeMSGClickActivity extends Activity {
         Map<String, Object> map = new HashMap<>();
         if (intent.getData() != null) {
             Uri uri = intent.getData();
-            UrlQuerySanitizer sanitizer = new UrlQuerySanitizer();
-            sanitizer.setUnregisteredParameterValueSanitizer(UrlQuerySanitizer.getAllButNulLegal());
-            sanitizer.parseUrl(uri.toString());
-            List<UrlQuerySanitizer.ParameterValuePair> pairs = sanitizer.getParameterList();
-            if (pairs != null && !pairs.isEmpty()) {
-                for (UrlQuerySanitizer.ParameterValuePair pair : pairs) {
-                    if (!TextUtils.isEmpty(pair.mParameter) && !TextUtils.isEmpty(pair.mValue)) {
-                        map.put(pair.mParameter, pair.mValue);
+            Set<String> keys = uri.getQueryParameterNames();
+            if (keys != null && !keys.isEmpty()) {
+                for (String key : keys) {
+                    if (!TextUtils.isEmpty(key)) {
+                        List<String> values = uri.getQueryParameters(key);
+                        if (values != null && !values.isEmpty()) {
+                            if (values.size() == 1) {
+                                map.put(key, values.get(0));
+                            } else {
+                                map.put(key, values);
+                            }
+                        }
                     }
                 }
             }

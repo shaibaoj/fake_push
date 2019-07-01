@@ -40,12 +40,13 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                XG_ACCESS_ID : '2100332241',
-                XG_ACCESS_KEY: 'A51T8RX1HS1W',
-                HW_APPID     : '100728875',
-                XIAOMI_APPID : '2882303761517989384',
-                XIAOMI_APPKEY: '5141798993384',
-                PACKAGE_NAME : "${applicationId}",// 小米通道
+                XG_ACCESS_ID    : '2100332241',
+                XG_ACCESS_KEY   : 'A51T8RX1HS1W',
+                XG_ACCESS_SCHEME: 'fake_push',// 非官方参数，可自定义，统一打开方式为 intent
+                HW_APPID        : '100728875',
+                XIAOMI_APPID    : '2882303761517989384',
+                XIAOMI_APPKEY   : '5141798993384',
+                PACKAGE_NAME    : "${applicationId}",// 小米通道
         ]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
