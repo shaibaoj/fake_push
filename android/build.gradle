@@ -28,8 +28,13 @@ android {
 
     defaultConfig {
         minSdkVersion 21
+
+        // library 混淆 -> 随 library 引用，自动添加到 apk 打包混淆
+        consumerProguardFiles 'consumer-proguard-rules.txt'
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     lintOptions {
         disable 'InvalidPackage'
     }
@@ -38,6 +43,19 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'io.github.v7lin:xinge-push-android:4.3.2-release+1'
-    implementation 'io.github.v7lin:xinge-push-stub-android:4.3.2-release+1'
+    implementation 'com.android.support:support-v4:28.0.0'
+
+    //信鸽jar，不包含厂商通道
+    implementation 'com.tencent.xinge:xinge:4.3.2-release'
+    //wup包
+    implementation 'com.tencent.wup:wup:1.0.0.E-Release'
+    //jg包
+    implementation 'com.tencent.jg:jg:1.1'
+    //mid包，minSdkVersion 14
+    implementation 'com.tencent.mid:mid:4.0.7-Release'
+
+    //厂商通道
+    implementation 'com.tencent.xinge:mipush:4.3.2-xiaomi-release'
+    implementation 'com.tencent.xinge:xgmz:4.3.2-meizu-release'
+    implementation 'com.tencent.xinge:xghw:4.3.2-huawei-release'
 }

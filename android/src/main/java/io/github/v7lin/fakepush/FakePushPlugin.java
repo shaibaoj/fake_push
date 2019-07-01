@@ -26,7 +26,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.view.FlutterNativeView;
 import io.github.v7lin.fakepush.util.NotificationManagerCompat;
-import xinge.push.stub.android.XinGeConstants;
+import io.github.v7lin.fakepush.xinge.XinGeConstants;
 
 /**
  * FakePushPlugin
