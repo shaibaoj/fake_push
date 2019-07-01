@@ -116,13 +116,11 @@ class _HomeState extends State<Home> {
   }
 
   void _handleLaunchNotification(String customContent) {
-    print(
-        'launchNotification: $customContent');
+    print('launchNotification: $customContent');
   }
 
   void _handleResumeNotification(String customContent) {
-    print(
-        'resumeNotification: $customContent');
+    print('resumeNotification: $customContent');
   }
 
   bool _isReleaseMode() {
