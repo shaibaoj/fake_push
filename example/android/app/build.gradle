@@ -40,14 +40,14 @@ android {
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                XG_ACCESS_ID: "2100332241",
-                XG_ACCESS_KEY: "A51T8RX1HS1W",
-                HW_APPID: "100728875",
-                XIAOMI_APPID: "2882303761517989384",
-                XIAOMI_APPKEY: "5141798993384",
+                XG_ACCESS_ID : '2100332241',
+                XG_ACCESS_KEY: 'A51T8RX1HS1W',
+                HW_APPID     : '100728875',
+                XIAOMI_APPID : '2882303761517989384',
+                XIAOMI_APPKEY: '5141798993384',
                 PACKAGE_NAME : "${applicationId}",// 小米通道
-                MEIZU_APPID: "120088",
-                MEIZU_APPKEY: "0fbef574fd1c4eb2bc13caf009b37c6d"
+                MEIZU_APPID  : '120088',
+                MEIZU_APPKEY : '0fbef574fd1c4eb2bc13caf009b37c6d'
         ]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -55,10 +55,10 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("./infos/dev.jks")
-            storePassword "123456"
-            keyAlias "dev"
-            keyPassword "123456"
+            storeFile file('infos/dev.jks')
+            storePassword '123456'
+            keyAlias 'dev'
+            keyPassword '123456'
         }
     }
 

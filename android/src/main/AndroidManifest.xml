@@ -1,7 +1,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.v7lin.fakepush">
-    
-    <application>
+
+    <application android:usesCleartextTraffic="true">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.xiaomi.mipush.sdk.appid"
+            android:value="\${XIAOMI_APPID}" />
+        <meta-data
+            android:name="com.xiaomi.mipush.sdk.appkey"
+            android:value="\${XIAOMI_APPKEY}" />
+
+        <meta-data
+            android:name="com.meizu.cloud.pushsdk.appid"
+            android:value="\${MEIZU_APPID}" />
+        <meta-data
+            android:name="com.meizu.cloud.pushsdk.appkey"
+            android:value="\${MEIZU_APPKEY}" />
+
         <receiver
             android:name=".xinge.XinGeMessageReceiver"
             android:exported="true">
