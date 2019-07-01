@@ -30,10 +30,10 @@ flutter版腾讯(信鸽)推送SDK
 ## 测试机型
 
 * 华为 [x]
-* 小米
-* Oppo
-* Vivo
-* iPhone
+* 小米 [ ]
+* Oppo [ ]
+* Vivo [ ]
+* iPhone [ ]
 
 ## android
 
