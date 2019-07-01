@@ -3,6 +3,7 @@ package io.github.v7lin.fakepush.xinge;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -54,7 +55,7 @@ public class XinGeMSGClickActivity extends Activity {
         }
         launchIntent.putExtra(KEY_CUSTOMCONTENT, JsonUtils.toJson(map));
         launchIntent.setPackage(getPackageName());
-        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(launchIntent);
         finish();
     }
@@ -64,6 +65,13 @@ public class XinGeMSGClickActivity extends Activity {
             String customContent = intent.getStringExtra(KEY_CUSTOMCONTENT);
             intent.removeExtra(KEY_NOTIFACTION_CLICKED);
             intent.removeExtra(KEY_CUSTOMCONTENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.removeFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            } else {
+                int flags = intent.getFlags();
+                flags &= ~Intent.FLAG_ACTIVITY_CLEAR_TOP;
+                intent.setFlags(flags);
+            }
             return customContent;
         }
         return null;

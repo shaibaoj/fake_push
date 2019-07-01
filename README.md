@@ -34,10 +34,6 @@ flutter版腾讯(信鸽)推送SDK
 ```
 
 ```
-设置 MainActivity 的启动方式（launchMode）为 singleTask
-```
-
-```
 ...
 android {
     ...
