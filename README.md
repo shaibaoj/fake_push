@@ -27,6 +27,14 @@ flutter版腾讯(信鸽)推送SDK
 * [华为推送](https://developer.huawei.com/consumer/cn/console#/openCard/AppService/6)
 * [小米推送](https://dev.mi.com/console/appservice/push.html)
 
+## 测试机型
+
+* 华为 [x]
+* 小米
+* Oppo
+* Vivo
+* iPhone
+
 ## android
 
 ```
