@@ -168,11 +168,13 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 }
 
 - (void)didLaunchRemoteNotification:(NSDictionary *)userInfo {
-    [_channel invokeMethod:METHOD_ONLAUNCHNOTIFICATION arguments:[self parseNotification:userInfo]];
+    NSDictionary *notification = [self parseNotification:userInfo];
+    [_channel invokeMethod:METHOD_ONLAUNCHNOTIFICATION arguments:notification[ARGUMENT_KEY_RESULT_CUSTOMCONTENT]];
 }
 
 - (void)didResumeRemoteNotification:(NSDictionary *)userInfo {
-    [_channel invokeMethod:METHOD_ONRESUMENOTIFICATION arguments:[self parseNotification:userInfo]];
+    NSDictionary *notification = [self parseNotification:userInfo];
+    [_channel invokeMethod:METHOD_ONRESUMENOTIFICATION arguments:notification[ARGUMENT_KEY_RESULT_CUSTOMCONTENT]];
 }
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo {
