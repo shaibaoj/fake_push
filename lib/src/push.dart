@@ -39,11 +39,11 @@ class Push {
   final StreamController<Message> _receiveNotificationStreamController =
       StreamController<Message>.broadcast();
 
-  final StreamController<Message> _launchNotificationStreamController =
-      StreamController<Message>.broadcast();
+  final StreamController<String> _launchNotificationStreamController =
+      StreamController<String>.broadcast();
 
-  final StreamController<Message> _resumeNotificationStreamController =
-      StreamController<Message>.broadcast();
+  final StreamController<String> _resumeNotificationStreamController =
+      StreamController<String>.broadcast();
 
   Future<void> registerApp() async {
     _channel.setMethodCallHandler(_handleMethod);
@@ -63,12 +63,10 @@ class Push {
             .fromMap(call.arguments as Map<dynamic, dynamic>));
         break;
       case _METHOD_ONLAUNCHNOTIFICATION:
-        _launchNotificationStreamController.add(MessageSerializer()
-            .fromMap(call.arguments as Map<dynamic, dynamic>));
+        _launchNotificationStreamController.add(call.arguments as String);
         break;
       case _METHOD_ONRESUMENOTIFICATION:
-        _resumeNotificationStreamController.add(MessageSerializer()
-            .fromMap(call.arguments as Map<dynamic, dynamic>));
+        _resumeNotificationStreamController.add(call.arguments as String);
         break;
     }
   }
@@ -116,12 +114,12 @@ class Push {
   }
 
   /// 接收通知栏点击事件 - 后台
-  Stream<Message> launchNotification() {
+  Stream<String> launchNotification() {
     return _launchNotificationStreamController.stream;
   }
 
   /// 接收通知栏点击事件 - 前台
-  Stream<Message> resumeNotification() {
+  Stream<String> resumeNotification() {
     return _resumeNotificationStreamController.stream;
   }
 

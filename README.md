@@ -29,72 +29,80 @@ flutter版腾讯(信鸽)推送SDK
 
 ## android
 
-````
+```
 # 混淆已打入 Library，随 Library 引用，自动添加到 apk 打包混淆
-````
+```
 
-````
+```
+设置 MainActivity 的启动方式（launchMode）为 singleTask
+```
+
+```
 ...
 android {
     ...
     defaultConfig {
         ...
         manifestPlaceholders = [
-                XG_ACCESS_ID : '${信鸽ACCESSID}',
-                XG_ACCESS_KEY: '${信鸽ACCESSKEY}',
-                HW_APPID     : '${华为的APPID}',
-                XIAOMI_APPID : '${小米的APPID}',
-                XIAOMI_APPKEY: '${小米的APPKEY}',
-                PACKAGE_NAME : "${applicationId}",// 小米通道
+                XG_ACCESS_ID    : '${信鸽ACCESSID}',
+                XG_ACCESS_KEY   : '${信鸽ACCESSKEY}',
+                XG_ACCESS_SCHEME: 'fake_push',// 非官方参数，可自定义，统一打开方式为 intent
+                HW_APPID        : '${华为的APPID}',
+                XIAOMI_APPID    : '${小米的APPID}',
+                XIAOMI_APPKEY   : '${小米的APPKEY}',
+                PACKAGE_NAME    : "${applicationId}",// 小米通道
         ]
         ...
     }
     ...
 }
-````
+```
 
-````
+```
 通知打开应用
-notificationActionType = 1
-````
+notificationActionType = 3
+例如:
+fake_push://v7lin.github.io/notify_detail
+fake_push://v7lin.github.io/notify_detail?param1=aa&param2=bb
+```
 
 ## ios
 
-````
+```
 # Capabilities
 Background Modes -> Remote notifications
 Push Notifications
-````
+```
 
-````
+```
 # info 添加字段 XG_ACCESS_ID、XG_ACCESS_KEY
 <key>XG_ACCESS_ID</key>
 <string>${信鸽ACCESSID}</string>
 <key>XG_ACCESS_KEY</key>
 <string>${信鸽ACCESSKEY}</string>
-````
+```
 
 ## flutter
 
 * snapshot
 
-````
+```
 dependencies:
   fake_push:
     git:
       url: https://github.com/v7lin/fake_push.git
-````
+```
 
 * release
 
-````
+```
 dependencies:
   fake_push: ^${latestTag}
-````
+```
 
-* example
+## Demo
 
-[示例](./example/lib/main.dart)
+[Demo](./example/lib/main.dart)
 
 ## Getting Started
 

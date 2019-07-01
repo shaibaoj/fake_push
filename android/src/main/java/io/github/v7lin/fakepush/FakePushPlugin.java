@@ -27,6 +27,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.view.FlutterNativeView;
 import io.github.v7lin.fakepush.util.NotificationManagerCompat;
 import io.github.v7lin.fakepush.xinge.XinGeConstants;
+import io.github.v7lin.fakepush.xinge.XinGeMSGClickActivity;
 
 /**
  * FakePushPlugin
@@ -244,9 +245,9 @@ public class FakePushPlugin implements MethodCallHandler, PluginRegistry.NewInte
     }
 
     private boolean handleNotificationClickedFromIntent(String method, Intent intent) {
-        Map<String, Object> map = PushMSGReceiver.extraMapClick(intent);
-        if (map != null) {
-            channel.invokeMethod(method, map);
+        String customContent = XinGeMSGClickActivity.extraClick(intent);
+        if (customContent != null) {
+            channel.invokeMethod(method, customContent);
             return true;
         }
         return false;

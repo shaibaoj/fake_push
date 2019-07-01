@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tencent.android.tpush.XGPushClickedResult;
+import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.XGPushShowedResult;
 import com.tencent.android.tpush.XGPushTextMessage;
 
@@ -40,19 +41,6 @@ public abstract class PushMSGReceiver extends BroadcastReceiver {
     public abstract void onReceiveMessage(Context context, Map<String, Object> map);
 
     public abstract void onReceiveNotification(Context context, Map<String, Object> map);
-
-    public static Map<String, Object> extraMapClick(Intent intent) {
-        Serializable serializable = intent.getSerializableExtra("tag.tpush.NOTIFIC");
-        if (serializable != null && serializable instanceof XGPushClickedResult) {
-            XGPushClickedResult message = (XGPushClickedResult) serializable;
-            Map<String, Object> map = new HashMap<>();
-            map.put(FakePushPlugin.ARGUMENT_KEY_RESULT_TITLE, message.getTitle());
-            map.put(FakePushPlugin.ARGUMENT_KEY_RESULT_CONTENT, message.getContent());
-            map.put(FakePushPlugin.ARGUMENT_KEY_RESULT_CUSTOMCONTENT, message.getCustomContent());
-            return map;
-        }
-        return null;
-    }
 
     public static <PR extends PushMSGReceiver> void registerReceiver(Context context, PR receiver) {
         IntentFilter intentFilter = new IntentFilter();

@@ -42,8 +42,8 @@ class _HomeState extends State<Home> {
   StreamSubscription<String> _receiveDeviceToken;
   StreamSubscription<Message> _receiveMessage;
   StreamSubscription<Message> _receiveNotification;
-  StreamSubscription<Message> _launchNotification;
-  StreamSubscription<Message> _resumeNotification;
+  StreamSubscription<String> _launchNotification;
+  StreamSubscription<String> _resumeNotification;
 
   @override
   void initState() {
@@ -115,14 +115,14 @@ class _HomeState extends State<Home> {
         'receiveNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
   }
 
-  void _handleLaunchNotification(Message notification) {
+  void _handleLaunchNotification(String customContent) {
     print(
-        'launchNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
+        'launchNotification: $customContent');
   }
 
-  void _handleResumeNotification(Message notification) {
+  void _handleResumeNotification(String customContent) {
     print(
-        'resumeNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
+        'resumeNotification: $customContent');
   }
 
   bool _isReleaseMode() {

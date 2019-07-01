@@ -23,5 +23,19 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".xinge.XinGeMSGClickActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/fake_push.Theme.Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:scheme="${XG_ACCESS_SCHEME}" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -46,7 +46,7 @@ public class XinGeMessageReceiver extends XGPushBaseReceiver {
     @Override
     public void onNotifactionShowedResult(Context context, XGPushShowedResult message) {
         // 通知展示
-        // notificationActionType==1为Activity，2为url，3为intent -> flutter 只能选 1
+        // notificationActionType==1为Activity，2为url，3为intent
         // Activity,url,intent都可以通过getActivity()获得
         PushMSGReceiver.receiveNotification(context, message);
     }
