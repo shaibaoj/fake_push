@@ -23,6 +23,7 @@ public abstract class PushMSGReceiver extends BroadcastReceiver {
 
     private static final String KEY_EXTRA_MAP = "extraMap";
 
+    private static final int PUSH_CHANNEL_XINGE = 0;
     private static final int PUSH_CHANNEL_XIAOMI = 3;
     private static final int PUSH_CHANNEL_HUAWEI = 4;
 
@@ -89,23 +90,27 @@ public abstract class PushMSGReceiver extends BroadcastReceiver {
         // 信鸽BUG？
         // 华为通道 notificationActionType = 1
         // 信鸽通道 notificationActionType = 3
-        if ((message.getPushChannel() == PUSH_CHANNEL_XIAOMI && message.getNotificationActionType() == XGPushShowedResult.NOTIFICATION_ACTION_ACTIVITY)
-                || message.getNotificationActionType() == XGPushShowedResult.NOTIFICATION_ACTION_INTENT) {
+        Uri uri = null;
+        if (message.getPushChannel() == PUSH_CHANNEL_XIAOMI && message.getNotificationActionType() == XGPushShowedResult.NOTIFICATION_ACTION_ACTIVITY) {
             Map<String, Object> customContent = JsonUtils.toMap(message.getCustomContent());
             Object intentUri = customContent.get("intent_uri");
             if (intentUri != null && intentUri instanceof String) {
-                Uri uri = Uri.parse((String) intentUri);
-                Set<String> keys = uri.getQueryParameterNames();
-                if (keys != null && !keys.isEmpty()) {
-                    for (String key : keys) {
-                        if (!TextUtils.isEmpty(key)) {
-                            List<String> values = uri.getQueryParameters(key);
-                            if (values != null && !values.isEmpty()) {
-                                if (values.size() == 1) {
-                                    dest.put(key, values.get(0));
-                                } else {
-                                    dest.put(key, values);
-                                }
+                uri = Uri.parse((String) intentUri);
+            }
+        } else if (message.getPushChannel() == PUSH_CHANNEL_XINGE && message.getNotificationActionType() == XGPushShowedResult.NOTIFICATION_ACTION_INTENT) {
+            uri = Uri.parse(message.getActivity());
+        }
+        if (uri != null) {
+            Set<String> keys = uri.getQueryParameterNames();
+            if (keys != null && !keys.isEmpty()) {
+                for (String key : keys) {
+                    if (!TextUtils.isEmpty(key)) {
+                        List<String> values = uri.getQueryParameters(key);
+                        if (values != null && !values.isEmpty()) {
+                            if (values.size() == 1) {
+                                dest.put(key, values.get(0));
+                            } else {
+                                dest.put(key, values);
                             }
                         }
                     }
