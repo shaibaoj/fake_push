@@ -27,13 +27,12 @@ flutter版腾讯(信鸽)推送SDK
 * [华为推送](https://developer.huawei.com/consumer/cn/console#/openCard/AppService/6)
 * [小米推送](https://dev.mi.com/console/appservice/push.html)
 
-## 测试机型
+## verify
 
-* 华为 [x]
-* 小米 [ ]
-* Oppo [ ]
-* Vivo [ ]
-* iPhone [ ]
+* [x] 华为通道(Android)
+* [x] 小米通道(Android)
+* [x] 信鸽通道(Android)
+* [ ] 信鸽通道(iOS)
 
 ## android
 
@@ -62,9 +61,9 @@ android {
 }
 ```
 
+通知打开应用 -> [使用Intent来跳转指定页面](https://xg.qq.com/docs/android_access/android_faq.html#%E6%B6%88%E6%81%AF%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6%E4%BB%A5%E5%8F%8A%E8%B7%B3%E8%BD%AC%E9%A1%B5%E9%9D%A2%E6%96%B9%E6%B3%95)
+
 ```
-通知打开应用
-notificationActionType = 3
 例如:
 fake_push://v7lin.github.io/notify_detail
 fake_push://v7lin.github.io/notify_detail?param1=aa&param2=bb

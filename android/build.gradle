@@ -26,6 +26,8 @@ android {
 
     resourcePrefix 'fake_push'
 
+    useLibrary 'org.apache.http.legacy'
+
     defaultConfig {
         minSdkVersion 21
 

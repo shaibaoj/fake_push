@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fake_push/fake_push.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -61,9 +62,82 @@ class _HomeState extends State<Home> {
     _push.startWork(enableDebug: !_isReleaseMode());
     _push.areNotificationsEnabled().then((bool isEnabled) {
       if (!isEnabled) {
-        _push.openNotificationsSettings();
+        if (Platform.isAndroid) {
+          showCupertinoDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title: const Text('提示'),
+                content: const Text('开启通知权限可收到更多优质内容'),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: const Text('取消'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: const Text('设置'),
+                    onPressed: () {
+                      _push.openNotificationsSettings();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+
+                ],
+              );
+            },
+          );
+        } else {
+          _push.openNotificationsSettings();
+        }
       }
     });
+  }
+
+  void _handleReceiveDeviceToken(String deviceToken) async {
+    print('receiveDeviceToken: $deviceToken - ${await _push.getDeviceToken()}');
+    _showTips('receiveDeviceToken', deviceToken);
+  }
+
+  void _handleReceiveMessage(Message message) {
+    print(
+        'receiveMessage: ${message.title} - ${message.content} - ${message.customContent}');
+    _showTips('receiveMessage',
+        '${message.title} - ${message.content} - ${message.customContent}');
+  }
+
+  void _handleReceiveNotification(Message notification) {
+    print(
+        'receiveNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
+    _showTips('receiveNotification',
+        '${notification.title} - ${notification.content} - ${notification.customContent}');
+  }
+
+  void _handleLaunchNotification(String customContent) {
+    print('launchNotification: $customContent');
+    _showTips('launchNotification', customContent);
+  }
+
+  void _handleResumeNotification(String customContent) {
+    print('resumeNotification: $customContent');
+    _showTips('resumeNotification', customContent);
+  }
+
+  void _showTips(String title, String content) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+        );
+      },
+    );
+  }
+
+  bool _isReleaseMode() {
+    return const bool.fromEnvironment('dart.vm.product');
   }
 
   @override
@@ -99,31 +173,5 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  void _handleReceiveDeviceToken(String deviceToken) async {
-    print('receiveDeviceToken: $deviceToken - ${await _push.getDeviceToken()}');
-  }
-
-  void _handleReceiveMessage(Message message) {
-    print(
-        'receiveMessage: ${message.title} - ${message.content} - ${message.customContent}');
-  }
-
-  void _handleReceiveNotification(Message notification) {
-    print(
-        'receiveNotification: ${notification.title} - ${notification.content} - ${notification.customContent}');
-  }
-
-  void _handleLaunchNotification(String customContent) {
-    print('launchNotification: $customContent');
-  }
-
-  void _handleResumeNotification(String customContent) {
-    print('resumeNotification: $customContent');
-  }
-
-  bool _isReleaseMode() {
-    return const bool.fromEnvironment('dart.vm.product');
   }
 }
