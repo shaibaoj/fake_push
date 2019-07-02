@@ -104,7 +104,7 @@ class Push {
   }
 
   /// 接收透传消息（静默消息）
-  /// title 喂狗了，Android 始终为空
+  /// title 喂狗了，Android 上始终为空
   /// 华为通道透传喂狗了 - 请用 content，不要用 customContent
   Stream<Message> receiveMessage() {
     return _receiveMessageStreamController.stream;

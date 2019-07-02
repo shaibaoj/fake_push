@@ -83,7 +83,6 @@ class _HomeState extends State<Home> {
                       Navigator.of(context).pop();
                     },
                   ),
-
                 ],
               );
             },
