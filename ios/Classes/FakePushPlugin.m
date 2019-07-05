@@ -48,8 +48,6 @@ static NSString * const ARGUMENT_KEY_RESULT_TITLE = @"title";
 static NSString * const ARGUMENT_KEY_RESULT_CONTENT = @"content";
 static NSString * const ARGUMENT_KEY_RESULT_CUSTOMCONTENT = @"customContent";
 
-static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_been_determined";
-
 - (instancetype)initWithChannel:(FlutterMethodChannel *)channel {
     self = [super init];
     if (self) {
@@ -86,22 +84,25 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 }
 
 - (void)openNotificationsSettings:(FlutterMethodCall*)call result:(FlutterResult)result {
-    if (@available(iOS 10.0, *)) {
-        [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-            if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
-                [self requestNotificationsPermissionNotDetermined];
-            } else {
-                NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
-            }
-        }];
+    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    if (@available(iOS 11.0, *)) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
     } else {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED]) {
-            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-            [self performSelectorOnMainThread:@selector(openURLCompat:) withObject:url waitUntilDone:NO];
-        } else {
-            [self requestNotificationsPermissionNotDetermined];
-        }
+        [[UIApplication sharedApplication] openURL:url];
+    }
+    result(nil);
+}
+
+- (void)startWork:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [self requestNotificationsPermissionNotDetermined];
+    NSNumber *enableDebug = call.arguments[ARGUMENT_KEY_ENABLEDEBUG];
+    [[XGPush defaultManager] setEnableDebug:[enableDebug boolValue]];
+    NSString *accessId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"XG_ACCESS_ID"];
+    NSString *accessKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"XG_ACCESS_KEY"];
+    uint32_t accessIdUint32 = (uint32_t)[accessId longLongValue];
+    [[XGPush defaultManager] startXGWithAppID:accessIdUint32 appKey:accessKey delegate:self];
+    if (_launchNotification != nil) {
+        [self didLaunchRemoteNotification:_launchNotification];
     }
     result(nil);
 }
@@ -115,27 +116,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:myTypes categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
     }
-}
-
-- (void) openURLCompat:(NSURL *)url {
-    if (@available(iOS 11.0, *)) {
-        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-    } else {
-        [[UIApplication sharedApplication] openURL:url];
-    }
-}
-
-- (void)startWork:(FlutterMethodCall*)call result:(FlutterResult)result {
-    NSNumber *enableDebug = call.arguments[ARGUMENT_KEY_ENABLEDEBUG];
-    [[XGPush defaultManager] setEnableDebug:[enableDebug boolValue]];
-    NSString *accessId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"XG_ACCESS_ID"];
-    NSString *accessKey = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"XG_ACCESS_KEY"];
-    uint32_t accessIdUint32 = (uint32_t)[accessId longLongValue];
-    [[XGPush defaultManager] startXGWithAppID:accessIdUint32 appKey:accessKey delegate:self];
-    if (_launchNotification != nil) {
-        [self didLaunchRemoteNotification:_launchNotification];
-    }
-    result(nil);
 }
 
 - (void)stopWork:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -247,11 +227,6 @@ static NSString * const SHAREDPREF_KEY_HAS_BEEN_DETERMINED = @"fake_push_has_bee
 }
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    if (@available(iOS 10.0, *)) {
-        // do nothing
-    } else {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:SHAREDPREF_KEY_HAS_BEEN_DETERMINED];
-    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {

@@ -99,6 +99,7 @@ class Push {
   }
 
   /// 接收DeviceToken
+  /// iOS首次打开应用会回调两次
   Stream<String> receiveDeviceToken() {
     return _receiveDeviceTokenStreamController.stream;
   }

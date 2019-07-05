@@ -5,6 +5,7 @@ import 'package:fake_push/fake_push.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runZoned(() {
@@ -60,36 +61,39 @@ class _HomeState extends State<Home> {
         _push.resumeNotification().listen(_handleResumeNotification);
 
     _push.startWork(enableDebug: !_isReleaseMode());
-    _push.areNotificationsEnabled().then((bool isEnabled) {
-      if (!isEnabled) {
-        if (Platform.isAndroid) {
-          showCupertinoDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CupertinoAlertDialog(
-                title: const Text('提示'),
-                content: const Text('开启通知权限可收到更多优质内容'),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: const Text('取消'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: const Text('设置'),
-                    onPressed: () {
-                      _push.openNotificationsSettings();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          _push.openNotificationsSettings();
-        }
+    // 第二次打开应用再调用
+    SharedPreferences.getInstance().then((SharedPreferences sharedPref) {
+      if (sharedPref.getBool('firstStart') ?? true) {
+        sharedPref.setBool('firstStart', false);
+      } else {
+        _push.areNotificationsEnabled().then((bool isEnabled) {
+          if (!isEnabled) {
+            showCupertinoDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CupertinoAlertDialog(
+                  title: const Text('提示'),
+                  content: const Text('开启通知权限可收到更多优质内容'),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: const Text('取消'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: const Text('设置'),
+                      onPressed: () {
+                        _push.openNotificationsSettings();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        });
       }
     });
   }
@@ -130,6 +134,14 @@ class _HomeState extends State<Home> {
         return CupertinoAlertDialog(
           title: Text(title),
           content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text('朕知道了～'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       },
     );

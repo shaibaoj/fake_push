@@ -19,6 +19,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  shared_preferences: ^0.4.3
+
   pedantic: '>=1.4.0 <3.0.0'
 
   build_runner:

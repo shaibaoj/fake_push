@@ -32,7 +32,7 @@ flutter版腾讯(信鸽)推送SDK
 * [x] 华为通道(Android)
 * [x] 小米通道(Android)
 * [x] 信鸽通道(Android)
-* [ ] 信鸽通道(iOS)
+* [x] 信鸽通道(iOS)
 
 ## android
 
