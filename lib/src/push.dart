@@ -5,6 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class Push {
+  Push() {
+    _channel.setMethodCallHandler(_handleMethod);
+  }
+
   static const String _METHOD_ARENOTIFICATIONSENABLED =
       'areNotificationsEnabled';
   static const String _METHOD_OPENNOTIFICATIONSSETTINGS =
@@ -44,10 +48,6 @@ class Push {
 
   final StreamController<String> _resumeNotificationStreamController =
       StreamController<String>.broadcast();
-
-  Future<void> registerApp() async {
-    _channel.setMethodCallHandler(_handleMethod);
-  }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {

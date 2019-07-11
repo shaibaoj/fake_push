@@ -39,7 +39,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Push _push = Push()..registerApp();
+  Push _push = Push();
 
   StreamSubscription<String> _receiveDeviceToken;
   StreamSubscription<Message> _receiveMessage;
